@@ -1,6 +1,6 @@
 const newPlayer = (socket, player) => {
     socket.on('connect', () => {
-        socket.emit('new-player',  {
+        socket.emit('new-player', {
             x: player.sprite.body.x,
             y: player.sprite.body.y,
             angle: player.sprite.rotation,

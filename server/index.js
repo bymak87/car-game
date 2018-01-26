@@ -5,32 +5,34 @@ const Server = http.Server(app)
 const PORT = process.env.PORT || 8000
 const io = require('socket.io')(Server)
 
-Server.listen(PORT, () => console.log('Game Server running on: ', PORT))
+Server.listen(PORT, () => console.log('Game server running on:', PORT))
 
 const players = {}
 
 io.on('connection', socket => {
-    //When a player connects
+    // When a player connects
     socket.on('new-player', state => {
-        console.log('New player joined with state: ', state)
+        console.log('New player joined with state:', state)
         players[socket.id] = state
-        //Emit the update-players method in the client side
+        // Emit the update-players method in the client side
         io.emit('update-players', players)
     })
+
     socket.on('disconnect', state => {
         delete players[socket.id]
         io.emit('update-players', players)
     })
-    //when a player moves
+
+    // When a player moves
     socket.on('move-player', data => {
         const { x, y, angle, playerName, speed } = data
 
-        //If the player is invalid, return
-        if(players[socket.id] === undefined) {
+        // If the player is invalid, return
+        if (players[socket.id] === undefined) {
             return
         }
 
-        //Update the player's data if the player moved
+        // Update the player's data if he moved
         players[socket.id].x = x
         players[socket.id].y = y
         players[socket.id].angle = angle
@@ -44,7 +46,8 @@ io.on('connection', socket => {
             x: speed.x,
             y: speed.y
         }
-        //Send the data back to the client
+
+        // Send the data back to the client
         io.emit('update-players', players)
     })
 })

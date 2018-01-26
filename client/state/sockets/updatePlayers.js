@@ -4,12 +4,12 @@ import { createText } from '../utils'
 const updatePlayers = (socket, otherPlayers, game) => {
     socket.on('update-players', playersData => {
         let playersFound = {}
-        //Iterate over all players
-        for(let index in playersData){
+        // Iterate over all players
+        for (let index in playersData) {
             const data = playersData[index]
-            //in case a player hasnt been created yet
-            //we make sure that we won't create a second instance of it
-            if(otherPlayers[index] === undefined && index !== socket.id){
+            // In case a player hasn't been created yet
+            // We make sure that we won't create a second instance of it
+            if (otherPlayers[index] === undefined && index !== socket.id) {
                 const newPlayer = player(data.x, data.y, game)
                 newPlayer.playerName = createText(game, newPlayer)
                 newPlayer.speedText = createText(game, newPlayer)
@@ -19,9 +19,9 @@ const updatePlayers = (socket, otherPlayers, game) => {
 
             playersFound[index] = true
 
-            //Update players data
-            if(index !== socket.id){
-                //update players target but not their real position
+            // Update players data
+            if (index !== socket.id) {
+                // Update players target but not their real position
                 otherPlayers[index].target_x = data.x
                 otherPlayers[index].target_y = data.y
                 otherPlayers[index].target_rotation = data.angle
@@ -30,20 +30,19 @@ const updatePlayers = (socket, otherPlayers, game) => {
                 otherPlayers[index].playerName.target_y = data.playerName.y
 
                 otherPlayers[index].speedText.target_x = data.speed.x
-                otherPlayers[index].speedText.target_y = data.speed.y   
+                otherPlayers[index].speedText.target_y = data.speed.y
 
                 otherPlayers[index].speed = data.speed.value
             }
         }
 
-        //check if there's no missing players, if there is, delete them
-        for(let id in otherPlayers){
-            if(!playersFound[id]){
+        // Check if there's no missing players, if there is, delete them
+        for (let id in otherPlayers) {
+            if (!playersFound[id]) {
                 otherPlayers[id].sprite.destroy()
                 otherPlayers[id].playerName.destroy()
-                otherPlayers[id].speedText.destroy(
-                    delete otherPlayers[id]
-                )
+                otherPlayers[id].speedText.destroy()
+                delete otherPlayers[id]
             }
         }
     })
